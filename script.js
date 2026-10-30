@@ -63,6 +63,8 @@ function getDatabase() {
 
 function prosesCheckIn() {
     const userAktif = localStorage.getItem('currentUser');
+    if (!userAktif) return;
+    
     const db = getDatabase();
     const hariIni = new Date().toISOString().split('T')[0];
     const jamIni = new Date().toLocaleTimeString();
@@ -82,6 +84,8 @@ function prosesCheckIn() {
 
 function prosesCheckOut() {
     const userAktif = localStorage.getItem('currentUser');
+    if (!userAktif) return;
+
     const db = getDatabase();
     const hariIni = new Date().toISOString().split('T')[0];
     const jamIni = new Date().toLocaleTimeString();
@@ -122,6 +126,9 @@ function muatDashboardKaryawan(userId) {
         if (terakhir.status === 'Disetujui') statusCutiEl.style.background = '#dcfce7';
         else if (terakhir.status === 'Tidak Disetujui') statusCutiEl.style.background = '#fee2e2';
         else statusCutiEl.style.background = '#fef3c7';
+    } else if (statusCutiEl) {
+        statusCutiEl.innerText = "Belum ada pengajuan";
+        statusCutiEl.style.background = "#f1f5f9";
     }
 }
 
@@ -198,6 +205,7 @@ function lihatDetailAbsenID(idTarget) {
 function muatDataCutiPusat() {
     const db = getDatabase();
     const container = document.getElementById('listPengajuanCuti');
+    if (!container) return;
 
     if (db.cuti.length === 0) {
         container.innerHTML = `<p style="color:#64748b;">Belum ada pengajuan cuti masuk.</p>`;
