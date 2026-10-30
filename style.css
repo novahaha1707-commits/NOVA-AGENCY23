@@ -1,14 +1,15 @@
 :root {
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --bg: #f8fafc;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #93c5fd 100%);
     --card-bg: #ffffff;
     --text: #1e293b;
     --border: #cbd5e1;
 }
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg);
+    background: var(--bg-gradient);
     color: var(--text);
     margin: 0;
     padding: 20px;
@@ -17,14 +18,16 @@ body {
     align-items: center;
     min-height: 100vh;
 }
+
 .container {
     width: 100%;
     max-width: 450px;
     background: var(--card-bg);
     padding: 25px;
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
+
 h2 { text-align: center; color: var(--primary); margin-bottom: 20px; }
 .form-group { margin-bottom: 15px; }
 label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; }
@@ -47,8 +50,30 @@ button {
     font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
+    transition: background 0.2s;
 }
 button:hover { background: var(--primary-hover); }
+
+/* Tombol Visual Absen (Merah & Hijau) */
+.btn-action {
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+.btn-unclicked { background-color: #dc2626 !important; } /* Merah */
+.btn-clicked { background-color: #16a34a !important; cursor: not-allowed; opacity: 0.9; } /* Hijau */
+
+.btn-primary { background: #2563eb; }
+.btn-info { background: #0ea5e9; }
+.btn-success { background: #10b981; }
+.btn-warning { background: #0284c7; }
+
 .hidden { display: none !important; }
 .alert {
     padding: 10px;
@@ -69,26 +94,76 @@ button:hover { background: var(--primary-hover); }
     text-align: center;
 }
 .user-info {
-    background: #e0e7ff;
-    padding: 10px;
+    background: #eff6ff;
+    padding: 10px 15px;
     border-radius: 8px;
     margin-bottom: 15px;
     font-size: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-weight: 600;
 }
 .logout-btn {
     background: #ef4444;
     width: auto;
-    padding: 5px 10px;
+    padding: 6px 12px;
     font-size: 12px;
     margin: 0;
 }
 .card-box {
-    background: #f1f5f9;
+    background: #f8fafc;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 15px;
+    border: 1px solid #e2e8f0;
+}
+.logo-area { text-align: center; margin-bottom: 20px; }
+.company-logo-img {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    background: white;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.logo-title { font-size: 22px; font-weight: bold; color: #1e3a8a; letter-spacing: 0.5px; }
+.logo-subtitle { color: #64748b; font-size: 12px; }
+.info-box { margin-top: 20px; font-size: 12px; color: #64748b; line-height: 1.5; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
+.desc-text { font-size: 13px; color: #64748b; margin-bottom: 10px; }
+.spv-panel { background: #f0f9ff; }
+.center-panel { background: #fffbeb; }
+
+/* Styling Menu Navigasi Pusat */
+.center-nav-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+.nav-tab-btn {
+    flex: 1;
+    font-size: 11px;
+    padding: 8px 4px;
+    background: #e2e8f0;
+    color: #475569;
+    border-radius: 6px;
+    margin-top: 0;
+}
+.nav-tab-btn.active-tab {
+    background: #b45309;
+    color: white;
+    font-weight: bold;
+}
+
+.history-box, .log-container {
+    background: white;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
 }
 hr { border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0; }
