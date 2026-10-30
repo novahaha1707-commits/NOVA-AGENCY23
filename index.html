@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Absensi & KPI Perusahaan</title>
-    <!-- Menghubungkan ke file CSS terpisah -->
+    <title>Sistem Absensi & KPI - PT NOVA SEJAHTERA</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-    <!-- LOGO PERUSAHAAN -->
-    <div style="text-align: center; margin-bottom: 15px;">
-        <div style="font-size: 24px; font-weight: bold; color: var(--primary);">🏢 PT MAJU JAYA</div>
-        <small style="color: #64748b;">Sistem Absensi & Penilaian Kinerja</small>
+    <!-- LOGO & NAMA PERUSAHAAN -->
+    <div class="logo-area">
+        <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img" onerror="this.style.display='none'">
+        <div class="logo-title">PT NOVA SEJAHTERA</div>
+        <small class="logo-subtitle">Sistem Absensi & Penilaian Kinerja Terpadu</small>
     </div>
 
     <!-- HALAMAN LOGIN -->
     <div id="loginPage">
-        <h2>Login Karyawan</h2>
+        <h2>Portal Masuk Karyawan</h2>
         <div id="loginAlert" class="alert hidden"></div>
         <div class="form-group">
             <label>ID Pengguna</label>
@@ -28,10 +28,10 @@
             <label>Password</label>
             <input type="password" id="loginPass" placeholder="Masukkan Password">
         </div>
-        <button onclick="handleLogin()">Masuk</button>
+        <button onclick="handleLogin()">Masuk Aplikasi</button>
         
-        <div style="margin-top: 20px; font-size: 12px; color: #64748b;">
-            <b>Petunjuk Coba Akun:</b><br>
+        <div class="info-box">
+            <b>Panduan Akun Demo:</b><br>
             • Karyawan: <code>fendi005</code> / <code>fendi567</code><br>
             • Spv: <code>nandaspv45</code> / <code>nanda@23</code><br>
             • Manager: <code>irfan357</code> / <code>irfan_4</code><br>
@@ -50,22 +50,30 @@
 
         <div class="card-box">
             <h3>Menu Absensi Harian</h3>
-            <p style="font-size: 13px; color: #64748b;">Jam Masuk: 07:00 - 07:20 | Jam Pulang: min 17:10</p>
-            <button onclick="doCheckIn()">Check-In Masuk</button>
-            <button onclick="doCheckOut()" style="background: #0ea5e9;">Check-Out Pulang</button>
+            <p class="desc-text">Jam Masuk: 07:00 - 07:20 | Jam Pulang: min 17:10</p>
+            <!-- Tombol dinamis warna merah/hijau (1x klik) -->
+            <button id="btnCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
+            <button id="btnCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
         </div>
 
         <div class="card-box">
-            <h3>Ajukan Cuti</h3>
+            <h3>Ajukan Cuti / Izin</h3>
             <div class="form-group" style="margin-bottom: 8px;">
                 <label style="font-size: 12px;">Tanggal Cuti</label>
                 <input type="date" id="cutiDate">
             </div>
             <div class="form-group" style="margin-bottom: 8px;">
                 <label style="font-size: 12px;">Alasan Cuti</label>
-                <textarea id="cutiReason" rows="2" placeholder="Alasan cuti..."></textarea>
+                <textarea id="cutiReason" rows="2" placeholder="Tuliskan alasan cuti..."></textarea>
             </div>
-            <button onclick="submitCuti()" style="background: #10b981;">Kirim Pengajuan Cuti</button>
+            <button onclick="submitCuti()" class="btn-success">Kirim Pengajuan Cuti</button>
+        </div>
+
+        <div class="card-box">
+            <h3>Riwayat Aktivitas Saya</h3>
+            <div id="empHistoryBox" class="history-box">
+                <em>Belum ada catatan aktivitas hari ini.</em>
+            </div>
         </div>
     </div>
 
@@ -78,13 +86,14 @@
         <div id="spvAlert"></div>
 
         <div class="card-box">
-            <h3>Absensi Saya (Spv)</h3>
-            <button onclick="doCheckIn()">Check-In Masuk</button>
-            <button onclick="doCheckOut()" style="background: #0ea5e9;">Check-Out Pulang</button>
+            <h3>Menu Absensi Mandiri (Spv)</h3>
+            <p class="desc-text">Lakukan absensi kehadiran harian Anda:</p>
+            <button id="btnSpvCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
+            <button id="btnSpvCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
         </div>
 
-        <div class="card-box" style="background: #e0f2fe;">
-            <h3 style="color: #0369a1;">Akses Khusus Supervisor</h3>
+        <div class="card-box spv-panel">
+            <h3 style="color: #0369a1;">Panel Kendali Supervisor</h3>
             
             <div class="form-group">
                 <label style="font-size: 13px;">Buka Absen Karyawan Telat</label>
@@ -92,20 +101,20 @@
                     <option value="fendi005">Fendi (fendi005)</option>
                     <option value="bagusadi456">Bagus (bagusadi456)</option>
                 </select>
-                <button onclick="bukaAbsenTelat()" style="background: #0284c7; margin-top: 8px;">Buka Akses (Tercatat di Pusat)</button>
+                <button onclick="bukaAbsenTelat()" class="btn-warning" style="margin-top: 8px;">Buka Akses (Tercatat di Pusat)</button>
             </div>
 
             <hr>
 
             <div class="form-group">
-                <label style="font-size: 13px;">Beri Penilaian / Rating Karyawan</label>
+                <label style="font-size: 13px;">Penilaian Kinerja KPI Karyawan</label>
                 <select id="rateKaryawan">
                     <option value="fendi005">Fendi (fendi005)</option>
                     <option value="bagusadi456">Bagus (bagusadi456)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label style="font-size: 13px;">Rating Bintang (1 - 5)</label>
+                <label style="font-size: 13px;">Rating Bintang</label>
                 <select id="rateBintang">
                     <option value="5">⭐⭐⭐⭐⭐ (5 - Sangat Baik)</option>
                     <option value="4">⭐⭐⭐⭐ (4 - Baik)</option>
@@ -115,46 +124,22 @@
                 </select>
             </div>
             <div class="form-group" style="margin-bottom: 8px;">
-                <label style="font-size: 13px;">Alasan / Kritik</label>
-                <textarea id="rateAlasan" rows="2" placeholder="Tulis ulasan/kritik kinerja..."></textarea>
+                <label style="font-size: 13px;">Alasan & Kritik Kinerja</label>
+                <textarea id="rateAlasan" rows="2" placeholder="Ulasan performa karyawan..."></textarea>
             </div>
-            <button onclick="submitRating()" style="background: #0284c7;">Kirim Penilaian ke Pusat</button>
+            <button onclick="submitRating()" class="btn-primary">Kirim Penilaian ke Pusat</button>
         </div>
     </div>
 
-    <!-- HALAMAN DASHBOARD MANAGER -->
+    <!-- HALAMAN DASHBOARD MANAGER (Kini Ada Absen Mandiri + Monitoring) -->
     <div id="managerDashboard" class="hidden">
         <div class="user-info">
             <span id="mgrWelcome">Halo, Manager</span>
             <button class="logout-btn" onclick="handleLogout()">Keluar</button>
         </div>
+
         <div class="card-box">
-            <h3>Monitoring Kinerja Tim</h3>
-            <p style="font-size: 13px; color: #64748b;">Manager dapat memantau ringkasan laporan operasional dan performa tim dari supervisor.</p>
-            <div id="managerLogBox" style="background: white; padding: 10px; border-radius: 6px; font-size: 13px; max-height: 200px; overflow-y: auto;">
-                <em>Memuat data laporan...</em>
-            </div>
-        </div>
-    </div>
-
-    <!-- HALAMAN DASHBOARD PUSAT -->
-    <div id="centerDashboard" class="hidden">
-        <div class="user-info">
-            <span id="centerWelcome">Halo, Admin Pusat</span>
-            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
-        </div>
-        <div class="card-box" style="background: #fef3c7;">
-            <h3 style="color: #b45309;">Pusat Log & Data Aktivitas</h3>
-            <p style="font-size: 12px; color: #78350f;">Memantau override spv, telat karyawan, dan rating kinerja:</p>
-            <div id="centerLogBox" style="background: white; padding: 10px; border-radius: 6px; font-size: 12px; max-height: 250px; overflow-y: auto; border: 1px solid #fde68a;">
-                <em>Belum ada aktivitas tercatat.</em>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Menghubungkan ke file JavaScript terpisah -->
-<script src="script.js"></script>
-
-</body>
-</html>
+            <h3>Menu Absensi Mandiri (Manager)</h3>
+            <p class="desc-text">Lakukan absensi kehadiran harian Anda:</p>
+            <button id="
+                
