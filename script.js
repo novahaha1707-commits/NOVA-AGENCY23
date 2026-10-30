@@ -246,3 +246,41 @@ function switchCenterTab(tabName) {
         updateRatingsView();
     }
 }
+// --- PR ATURAN CHECK-IN & CHECK-OUT 24 JAM ---
+function aturWaktuAbsen() {
+    const sekarang = new Date();
+    const jam = sekarang.getHours(); // Format 24 jam (0 - 23)
+    const menit = sekarang.getMinutes();
+    const waktuSekarang = jam + (menit / 60);
+
+    const btnCheckIn = document.getElementById('btnCheckIn');
+    const btnCheckOut = document.getElementById('btnCheckOut');
+
+    // Contoh: Check-In aktif mulai pukul 07.00 pagi sampai sebelum pukul 17.00 sore
+    if (btnCheckIn) {
+        if (waktuSekarang >= 7.0 && waktuSekarang < 17.0) {
+            btnCheckIn.disabled = false;
+            btnCheckIn.innerText = "CHECK-IN SEKARANG";
+        } else {
+            btnCheckIn.disabled = true;
+            btnCheckIn.innerText = "CHECK-IN DIBUKA JAM 07.00";
+        }
+    }
+
+    // Aturan 24 Jam / Reset Check-Out setelah pukul 17.00 atau lewat batas
+    if (btnCheckOut) {
+        // Misal check-out bisa ditekan setelah jam 15.00 hingga lewat tengah malam
+        if (waktuSekarang >= 15.0 || waktuSekarang < 7.0) {
+            btnCheckOut.disabled = false;
+        } else {
+            btnCheckOut.disabled = true;
+        }
+    }
+}
+
+// Jalankan fungsi saat halaman selesai dimuat
+window.addEventListener('DOMContentLoaded', () => {
+    aturWaktuAbsen();
+    // Cek ulang setiap 1 menit otomatis
+    setInterval(aturWaktuAbsen, 60000);
+});
