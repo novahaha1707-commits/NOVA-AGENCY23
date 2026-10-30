@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Absensi & KPI Perusahaan</title>
+    <!-- Menghubungkan ke file CSS terpisah -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- LOGO PERUSAHAAN -->
+    <div style="text-align: center; margin-bottom: 15px;">
+        <div style="font-size: 24px; font-weight: bold; color: var(--primary);">🏢 PT MAJU JAYA</div>
+        <small style="color: #64748b;">Sistem Absensi & Penilaian Kinerja</small>
+    </div>
+
+    <!-- HALAMAN LOGIN -->
+    <div id="loginPage">
+        <h2>Login Karyawan</h2>
+        <div id="loginAlert" class="alert hidden"></div>
+        <div class="form-group">
+            <label>ID Pengguna</label>
+            <input type="text" id="loginId" placeholder="Masukkan ID (cth: fendi005)">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPass" placeholder="Masukkan Password">
+        </div>
+        <button onclick="handleLogin()">Masuk</button>
+        
+        <div style="margin-top: 20px; font-size: 12px; color: #64748b;">
+            <b>Petunjuk Coba Akun:</b><br>
+            • Karyawan: <code>fendi005</code> / <code>fendi567</code><br>
+            • Spv: <code>nandaspv45</code> / <code>nanda@23</code><br>
+            • Manager: <code>irfan357</code> / <code>irfan_4</code><br>
+            • Pusat: <code>center1</code> / <code>@@234pusat</code>
+        </div>
+    </div>
+
+    <!-- HALAMAN DASHBOARD KARYAWAN -->
+    <div id="employeeDashboard" class="hidden">
+        <div class="user-info">
+            <span id="empWelcome">Halo, Karyawan</span>
+            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
+        </div>
+
+        <div id="empAlert"></div>
+
+        <div class="card-box">
+            <h3>Menu Absensi Harian</h3>
+            <p style="font-size: 13px; color: #64748b;">Jam Masuk: 07:00 - 07:20 | Jam Pulang: min 17:10</p>
+            <button onclick="doCheckIn()">Check-In Masuk</button>
+            <button onclick="doCheckOut()" style="background: #0ea5e9;">Check-Out Pulang</button>
+        </div>
+
+        <div class="card-box">
+            <h3>Ajukan Cuti</h3>
+            <div class="form-group" style="margin-bottom: 8px;">
+                <label style="font-size: 12px;">Tanggal Cuti</label>
+                <input type="date" id="cutiDate">
+            </div>
+            <div class="form-group" style="margin-bottom: 8px;">
+                <label style="font-size: 12px;">Alasan Cuti</label>
+                <textarea id="cutiReason" rows="2" placeholder="Alasan cuti..."></textarea>
+            </div>
+            <button onclick="submitCuti()" style="background: #10b981;">Kirim Pengajuan Cuti</button>
+        </div>
+    </div>
+
+    <!-- HALAMAN DASHBOARD SUPERVISOR -->
+    <div id="spvDashboard" class="hidden">
+        <div class="user-info">
+            <span id="spvWelcome">Halo, Supervisor</span>
+            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
+        </div>
+        <div id="spvAlert"></div>
+
+        <div class="card-box">
+            <h3>Absensi Saya (Spv)</h3>
+            <button onclick="doCheckIn()">Check-In Masuk</button>
+            <button onclick="doCheckOut()" style="background: #0ea5e9;">Check-Out Pulang</button>
+        </div>
+
+        <div class="card-box" style="background: #e0f2fe;">
+            <h3 style="color: #0369a1;">Akses Khusus Supervisor</h3>
+            
+            <div class="form-group">
+                <label style="font-size: 13px;">Buka Absen Karyawan Telat</label>
+                <select id="targetKaryawanTelat">
+                    <option value="fendi005">Fendi (fendi005)</option>
+                    <option value="bagusadi456">Bagus (bagusadi456)</option>
+                </select>
+                <button onclick="bukaAbsenTelat()" style="background: #0284c7; margin-top: 8px;">Buka Akses (Tercatat di Pusat)</button>
+            </div>
+
+            <hr>
+
+            <div class="form-group">
+                <label style="font-size: 13px;">Beri Penilaian / Rating Karyawan</label>
+                <select id="rateKaryawan">
+                    <option value="fendi005">Fendi (fendi005)</option>
+                    <option value="bagusadi456">Bagus (bagusadi456)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label style="font-size: 13px;">Rating Bintang (1 - 5)</label>
+                <select id="rateBintang">
+                    <option value="5">⭐⭐⭐⭐⭐ (5 - Sangat Baik)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 - Baik)</option>
+                    <option value="3">⭐⭐⭐ (3 - Cukup)</option>
+                    <option value="⭐⭐">⭐⭐ (2 - Kurang)</option>
+                    <option value="⭐">⭐ (1 - Buruk)</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 8px;">
+                <label style="font-size: 13px;">Alasan / Kritik</label>
+                <textarea id="rateAlasan" rows="2" placeholder="Tulis ulasan/kritik kinerja..."></textarea>
+            </div>
+            <button onclick="submitRating()" style="background: #0284c7;">Kirim Penilaian ke Pusat</button>
+        </div>
+    </div>
+
+    <!-- HALAMAN DASHBOARD MANAGER -->
+    <div id="managerDashboard" class="hidden">
+        <div class="user-info">
+            <span id="mgrWelcome">Halo, Manager</span>
+            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
+        </div>
+        <div class="card-box">
+            <h3>Monitoring Kinerja Tim</h3>
+            <p style="font-size: 13px; color: #64748b;">Manager dapat memantau ringkasan laporan operasional dan performa tim dari supervisor.</p>
+            <div id="managerLogBox" style="background: white; padding: 10px; border-radius: 6px; font-size: 13px; max-height: 200px; overflow-y: auto;">
+                <em>Memuat data laporan...</em>
+            </div>
+        </div>
+    </div>
+
+    <!-- HALAMAN DASHBOARD PUSAT -->
+    <div id="centerDashboard" class="hidden">
+        <div class="user-info">
+            <span id="centerWelcome">Halo, Admin Pusat</span>
+            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
+        </div>
+        <div class="card-box" style="background: #fef3c7;">
+            <h3 style="color: #b45309;">Pusat Log & Data Aktivitas</h3>
+            <p style="font-size: 12px; color: #78350f;">Memantau override spv, telat karyawan, dan rating kinerja:</p>
+            <div id="centerLogBox" style="background: white; padding: 10px; border-radius: 6px; font-size: 12px; max-height: 250px; overflow-y: auto; border: 1px solid #fde68a;">
+                <em>Belum ada aktivitas tercatat.</em>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Menghubungkan ke file JavaScript terpisah -->
+<script src="script.js"></script>
+
+</body>
+</html>
