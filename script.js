@@ -1,6 +1,6 @@
 const users = {
-    "fendi005": { name: "Fendi", role: "karyawan", pass: "fendi567" },
-    "bagusadi456": { name: "Bagus Adi", role: "karyawan", pass: "bagusbagus23" },
+    "fendi005": { name: "fendi005", role: "karyawan", pass: "fendi567" },
+    "bagusadi456": { name: "bagusadi456", role: "karyawan", pass: "bagusbagus23" },
     "nandaspv45": { name: "Nanda (Supervisor)", role: "supervisor", pass: "nanda@23" },
     "irfan357": { name: "Irfan (Manager)", role: "manager", pass: "irfan_4" },
     "center1": { name: "Admin Pusat", role: "center", pass: "@@234pusat" }
