@@ -51,7 +51,6 @@
         <div class="card-box">
             <h3>Menu Absensi Harian</h3>
             <p class="desc-text">Jam Masuk: 07:00 - 07:20 | Jam Pulang: min 17:10</p>
-            <!-- Tombol dinamis warna merah/hijau (1x klik) -->
             <button id="btnCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
             <button id="btnCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
         </div>
@@ -87,25 +86,21 @@
 
         <div class="card-box">
             <h3>Menu Absensi Mandiri (Spv)</h3>
-            <p class="desc-text">Lakukan absensi kehadiran harian Anda:</p>
             <button id="btnSpvCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
             <button id="btnSpvCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
         </div>
 
         <div class="card-box spv-panel">
             <h3 style="color: #0369a1;">Panel Kendali Supervisor</h3>
-            
             <div class="form-group">
                 <label style="font-size: 13px;">Buka Absen Karyawan Telat</label>
                 <select id="targetKaryawanTelat">
                     <option value="fendi005">Fendi (fendi005)</option>
                     <option value="bagusadi456">Bagus (bagusadi456)</option>
                 </select>
-                <button onclick="bukaAbsenTelat()" class="btn-warning" style="margin-top: 8px;">Buka Akses (Tercatat di Pusat)</button>
+                <button onclick="bukaAbsenTelat()" class="btn-warning" style="margin-top: 8px;">Buka Akses</button>
             </div>
-
             <hr>
-
             <div class="form-group">
                 <label style="font-size: 13px;">Penilaian Kinerja KPI Karyawan</label>
                 <select id="rateKaryawan">
@@ -125,13 +120,13 @@
             </div>
             <div class="form-group" style="margin-bottom: 8px;">
                 <label style="font-size: 13px;">Alasan & Kritik Kinerja</label>
-                <textarea id="rateAlasan" rows="2" placeholder="Ulasan performa karyawan..."></textarea>
+                <textarea id="rateAlasan" rows="2" placeholder="Ulasan performa..."></textarea>
             </div>
             <button onclick="submitRating()" class="btn-primary">Kirim Penilaian ke Pusat</button>
         </div>
     </div>
 
-    <!-- HALAMAN DASHBOARD MANAGER (Kini Ada Absen Mandiri + Monitoring) -->
+    <!-- HALAMAN DASHBOARD MANAGER -->
     <div id="managerDashboard" class="hidden">
         <div class="user-info">
             <span id="mgrWelcome">Halo, Manager</span>
@@ -140,6 +135,54 @@
 
         <div class="card-box">
             <h3>Menu Absensi Mandiri (Manager)</h3>
-            <p class="desc-text">Lakukan absensi kehadiran harian Anda:</p>
-            <button id="
-                
+            <button id="btnMgrCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
+            <button id="btnMgrCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
+        </div>
+
+        <div class="card-box">
+            <h3>Monitoring Kinerja Tim</h3>
+            <div id="managerLogBox" class="log-container">
+                <em>Memuat data laporan...</em>
+            </div>
+        </div>
+    </div>
+
+    <!-- HALAMAN DASHBOARD PUSAT -->
+    <div id="centerDashboard" class="hidden">
+        <div class="user-info">
+            <span id="centerWelcome">Halo, Admin Pusat</span>
+            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
+        </div>
+
+        <div class="center-nav-tabs">
+            <button onclick="switchCenterTab('absensi')" id="tabAbsensi" class="nav-tab-btn active-tab">📁 Absensi Karyawan</button>
+            <button onclick="switchCenterTab('jadwal')" id="tabJadwal" class="nav-tab-btn">📅 Jadwal Karyawan</button>
+            <button onclick="switchCenterTab('penilaian')" id="tabPenilaian" class="nav-tab-btn">⭐ Penilaian Harian</button>
+        </div>
+
+        <div id="centerSectionAbsensi" class="center-section-content">
+            <div class="card-box center-panel">
+                <h3 style="color: #b45309;">Rekap Absensi Global</h3>
+                <div id="centerLogBox" class="log-container"><em>Belum ada aktivitas.</em></div>
+            </div>
+        </div>
+
+        <div id="centerSectionJadwal" class="center-section-content hidden">
+            <div class="card-box center-panel">
+                <h3 style="color: #b45309;">Jadwal Shift & Kerja</h3>
+                <p class="desc-text">Shift Pagi: 07:00 - 17:10 (Senin - Jumat)</p>
+            </div>
+        </div>
+
+        <div id="centerSectionPenilaian" class="center-section-content hidden">
+            <div class="card-box center-panel">
+                <h3 style="color: #b45309;">Arsip Penilaian & KPI</h3>
+                <div id="centerRatingBox" class="log-container"><em>Belum ada penilaian.</em></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
