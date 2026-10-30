@@ -1,4 +1,3 @@
-// --- DATABASE KREDENSIAL AKUN ---
 const akunDatabase = {
     'fendi005': { pass: 'fendi567', role: 'Karyawan', nama: 'Fendi' },
     'bagusadi456': { pass: 'bagusbagus23', role: 'Karyawan', nama: 'Bagus Adi' },
@@ -7,7 +6,6 @@ const akunDatabase = {
     'center1': { pass: '@@234pusat', role: 'Pusat', nama: 'Pusat Administrator' }
 };
 
-// Cek status saat halaman dimuat
 window.onload = function() {
     const userAktif = localStorage.getItem('currentUser');
     const roleAktif = localStorage.getItem('currentRole');
@@ -17,7 +15,6 @@ window.onload = function() {
     }
 };
 
-// --- FUNGSI LOGIN ---
 function prosesLogin() {
     const idInput = document.getElementById('userId').value.trim();
     const passInput = document.getElementById('password').value.trim();
@@ -29,16 +26,12 @@ function prosesLogin() {
     }
 
     alertBox.classList.add('hidden');
-    const dataAkun = akunDatabase[idInput];
-
-    // Simpan sesi login
     localStorage.setItem('currentUser', idInput);
-    localStorage.setItem('currentRole', dataAkun.role);
+    localStorage.setItem('currentRole', akunDatabase[idInput].role);
 
-    tampilkanDashboard(dataAkun.role, idInput);
+    tampilkanDashboard(akunDatabase[idInput].role, idInput);
 }
 
-// --- PENGATURAN TAMPILAN DASHBOARD ---
 function tampilkanDashboard(role, userId) {
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('karyawanDashboard').classList.add('hidden');
@@ -46,7 +39,8 @@ function tampilkanDashboard(role, userId) {
 
     if (role === 'Karyawan' || role === 'Supervisor' || role === 'Manager') {
         document.getElementById('karyawanDashboard').classList.remove('hidden');
-        document.getElementById('welcomeUserKaryawan').innerText = `Halo, ${userId} (${role})`;
+        document.getElementById('welcomeUserKaryawan').innerText = `Halo, ${userId}`;
+        document.getElementById('subtitleRole').innerText = `Portal ${role}`;
         muatDashboardKaryawan(userId);
     } else if (role === 'Pusat') {
         document.getElementById('centerDashboard').classList.remove('hidden');
@@ -54,14 +48,12 @@ function tampilkanDashboard(role, userId) {
     }
 }
 
-// --- LOGOUT ---
 function logout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('currentRole');
     location.reload();
 }
 
-// --- HELPER DATABASE LOKAL ---
 function getDatabase() {
     return {
         absen: JSON.parse(localStorage.getItem('db_absen')) || [],
@@ -69,7 +61,6 @@ function getDatabase() {
     };
 }
 
-// --- FITUR KARYAWAN: CHECK-IN & TARGET 25 HARI ---
 function prosesCheckIn() {
     const userAktif = localStorage.getItem('currentUser');
     const db = getDatabase();
@@ -130,6 +121,7 @@ function muatDashboardKaryawan(userId) {
         statusCutiEl.innerText = `Tanggal: ${terakhir.tanggal} | Status: ${terakhir.status.toUpperCase()}`;
         if (terakhir.status === 'Disetujui') statusCutiEl.style.background = '#dcfce7';
         else if (terakhir.status === 'Tidak Disetujui') statusCutiEl.style.background = '#fee2e2';
+        else statusCutiEl.style.background = '#fef3c7';
     }
 }
 
@@ -148,10 +140,11 @@ function submitCuti() {
     localStorage.setItem('db_cuti', JSON.stringify(db));
 
     alert("Pengajuan cuti berhasil dikirim!");
+    document.getElementById('tanggalCuti').value = '';
+    document.getElementById('alasanCuti').value = '';
     muatDashboardKaryawan(userAktif);
 }
 
-// --- FITUR PUSAT: ATTENDANCE & CUTI ---
 function gantiTabPusat(tab) {
     const panelAtt = document.getElementById('panelAttendance');
     const panelLibur = document.getElementById('panelLibur');
@@ -180,7 +173,7 @@ function filterRoleAttendance(role) {
 
     container.innerHTML = `<strong>Pilih ID (${role}):</strong><br>`;
     daftarID.forEach(id => {
-        container.innerHTML += `<button class="nav-tab-btn" style="background:#2563eb; color:white; margin:4px 0;" onclick="lihatDetailAbsenID('${id}')">${id}</button>`;
+        container.innerHTML += `<button type="button" class="nav-tab-btn" style="background:#2563eb; color:white; margin:4px 0;" onclick="lihatDetailAbsenID('${id}')">${id}</button>`;
     });
 }
 
@@ -218,8 +211,8 @@ function muatDataCutiPusat() {
                 <b>ID: ${c.id}</b> | Tgl: ${c.tanggal}<br>
                 Alasan: ${c.alasan}<br>
                 Status: <b>${c.status}</b><br><br>
-                <button class="nav-tab-btn" style="background:green; color:white; width:48%; display:inline-block;" onclick="ubahStatusCuti(${index}, 'Disetujui')">Setuju</button>
-                <button class="nav-tab-btn" style="background:red; color:white; width:48%; display:inline-block; margin-left:4%;" onclick="ubahStatusCuti(${index}, 'Tidak Disetujui')">Tidak</button>
+                <button type="button" class="nav-tab-btn" style="background:green; color:white; width:48%; display:inline-block;" onclick="ubahStatusCuti(${index}, 'Disetujui')">Setuju</button>
+                <button type="button" class="nav-tab-btn" style="background:red; color:white; width:48%; display:inline-block; margin-left:4%;" onclick="ubahStatusCuti(${index}, 'Tidak Disetujui')">Tidak</button>
             </div>
         `;
     });
