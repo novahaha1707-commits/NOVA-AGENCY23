@@ -3,269 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Absensi & KPI - PT NOVA SEJAHTERA</title>
+    <title>PT Nova Sejahtera - Portal Absensi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
-    <!-- LOGO & NAMA PERUSAHAAN -->
-    <div class="logo-area">
-        <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img" onerror="this.style.display='none'">
-        <div class="logo-title">PT NOVA SEJAHTERA</div>
-        <small class="logo-subtitle">Sistem Absensi & Penilaian Kinerja Terpadu</small>
-    </div>
-
-    <!-- HALAMAN LOGIN -->
-    <div id="loginPage">
-        <h2>Portal Masuk Karyawan</h2>
-        <div id="loginAlert" class="alert hidden"></div>
-        <div class="form-group">
-            <label>ID Pengguna</label>
-            <input type="text" id="loginId" placeholder="Masukkan ID (cth: fendi005)">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="loginPass" placeholder="Masukkan Password">
-        </div>
-        <button onclick="handleLogin()">Masuk Aplikasi</button>
-        
-        <div class="info-box">
-            <b>Panduan Akun Demo:</b><br>
-            • Karyawan: <code>fendi005</code> / <code>fendi567</code><br>
-            • Spv: <code>nandaspv45</code> / <code>nanda@23</code><br>
-            • Manager: <code>irfan357</code> / <code>irfan_4</code><br>
-            • Pusat: <code>center1</code> / <code>@@234pusat</code>
-        </div>
-    </div>
-
-    <!-- HALAMAN DASHBOARD KARYAWAN -->
-    <div id="employeeDashboard" class="hidden">
-        <div class="user-info">
-            <span id="empWelcome">Halo, Karyawan</span>
-            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
-        </div>
-
-        <div id="empAlert"></div>
-
-        <div class="card-box">
-            <h3>Menu Absensi Harian</h3>
-            <p class="desc-text">Jam Masuk: 07:00 - 07:20 | Jam Pulang: min 17:10</p>
-            <button id="btnCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
-            <button id="btnCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
-        </div>
-
-        <div class="card-box">
-            <h3>Ajukan Cuti / Izin</h3>
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label style="font-size: 12px;">Tanggal Cuti</label>
-                <input type="date" id="cutiDate">
+    <div class="container">
+        <!-- === HALAMAN LOGIN === -->
+        <div id="loginSection">
+            <div class="logo-area">
+                <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img">
+                <div class="logo-title">PT Nova Sejahtera</div>
+                <div class="logo-subtitle">Sistem Manajemen Terpadu</div>
             </div>
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label style="font-size: 12px;">Alasan Cuti</label>
-                <textarea id="cutiReason" rows="2" placeholder="Tuliskan alasan cuti..."></textarea>
-            </div>
-            <button onclick="submitCuti()" class="btn-success">Kirim Pengajuan Cuti</button>
-        </div>
+            
+            <div id="loginAlert" class="alert hidden">ID atau Password salah!</div>
 
-        <div class="card-box">
-            <h3>Riwayat Aktivitas Saya</h3>
-            <div id="empHistoryBox" class="history-box">
-                <em>Belum ada catatan aktivitas hari ini.</em>
-            </div>
-        </div>
-    </div>
-
-    <!-- HALAMAN DASHBOARD SUPERVISOR -->
-    <div id="spvDashboard" class="hidden">
-        <div class="user-info">
-            <span id="spvWelcome">Halo, Supervisor</span>
-            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
-        </div>
-        <div id="spvAlert"></div>
-
-        <div class="card-box">
-            <h3>Menu Absensi Mandiri (Spv)</h3>
-            <button id="btnSpvCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
-            <button id="btnSpvCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
-        </div>
-
-        <div class="card-box spv-panel">
-            <h3 style="color: #0369a1;">Panel Kendali Supervisor</h3>
             <div class="form-group">
-                <label style="font-size: 13px;">Buka Absen Karyawan Telat</label>
-                <select id="targetKaryawanTelat">
-                    <option value="fendi005">Fendi (fendi005)</option>
-                    <option value="bagusadi456">Bagus (bagusadi456)</option>
-                </select>
-                <button onclick="bukaAbsenTelat()" class="btn-warning" style="margin-top: 8px;">Buka Akses</button>
-            </div>
-            <hr>
-            <div class="form-group">
-                <label style="font-size: 13px;">Penilaian Kinerja KPI Karyawan</label>
-                <select id="rateKaryawan">
-                    <option value="fendi005">Fendi (fendi005)</option>
-                    <option value="bagusadi456">Bagus (bagusadi456)</option>
-                </select>
+                <label for="userId">Username / ID</label>
+                <input type="text" id="userId" placeholder="Masukkan ID (cth: fendi005)">
             </div>
             <div class="form-group">
-                <label style="font-size: 13px;">Rating Bintang</label>
-                <select id="rateBintang">
-                    <option value="5">⭐⭐⭐⭐⭐ (5 - Sangat Baik)</option>
-                    <option value="4">⭐⭐⭐⭐ (4 - Baik)</option>
-                    <option value="3">⭐⭐⭐ (3 - Cukup)</option>
-                    <option value="⭐⭐">⭐⭐ (2 - Kurang)</option>
-                    <option value="⭐">⭐ (1 - Buruk)</option>
-                </select>
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password">
             </div>
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label style="font-size: 13px;">Alasan & Kritik Kinerja</label>
-                <textarea id="rateAlasan" rows="2" placeholder="Ulasan performa..."></textarea>
+            <button onclick="prosesLogin()">LOGIN</button>
+            
+            <div class="info-box">
+                <b>Info Akses Uji Coba:</b><br>
+                • Karyawan: <code>fendi005</code> / <code>fendi567</code><br>
+                • Supervisor: <code>nandaspv45</code> / <code>nanda@23</code><br>
+                • Manager: <code>irfan357</code> / <code>irfan_4</code><br>
+                • Pusat: <code>center1</code> / <code>@@234pusat</code>
             </div>
-            <button onclick="submitRating()" class="btn-primary">Kirim Penilaian ke Pusat</button>
         </div>
+
+        <!-- === DASHBOARD KARYAWAN === -->
+        <div id="karyawanDashboard" class="hidden">
+            <div class="logo-area">
+                <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img">
+                <div class="logo-title">PT Nova Sejahtera</div>
+                <div class="logo-subtitle">Portal Karyawan</div>
+            </div>
+            
+            <div class="user-info">
+                <span id="welcomeUserKaryawan">Halo, Karyawan</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Tracker Target Absen (Min 25 Hari) -->
+            <div class="card-box">
+                <h4>📊 Target Kehadiran Bulan Ini</h4>
+                <p id="infoTargetAbsen" class="desc-text">Memuat data absensi...</p>
+                <button id="btnCheckIn" class="btn-action btn-unclicked" onclick="prosesCheckIn()">CHECK-IN</button>
+                <button id="btnCheckOut" class="btn-action btn-unclicked" onclick="prosesCheckOut()">CHECK-OUT</button>
+            </div>
+
+            <!-- Pengajuan Libur / Cuti -->
+            <div class="card-box">
+                <h4>📝 Pengajuan Cuti / Libur</h4>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="date" id="tanggalCuti">
+                    <textarea id="alasanCuti" placeholder="Alasan cuti..." rows="2" style="margin-top:8px;"></textarea>
+                    <button class="btn-action btn-primary" onclick="submitCuti()" style="margin-top:8px;">Kirim Pengajuan</button>
+                </div>
+                <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">Status Pengajuan Terakhir:</p>
+                <div id="statusCutiKaryawan" class="alert" style="background:#f1f5f9; color:#334155; margin-bottom: 0;">Belum ada pengajuan</div>
+            </div>
+        </div>
+
+        <!-- === DASHBOARD PUSAT (CENTER) === -->
+        <div id="centerDashboard" class="hidden">
+            <div class="logo-area">
+                <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img">
+                <div class="logo-title">PT Nova Sejahtera</div>
+                <div class="logo-subtitle">Pusat Control Panel</div>
+            </div>
+
+            <div class="user-info">
+                <span>Pusat Administrator</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Tab Navigasi Pusat -->
+            <div class="center-nav-tabs">
+                <button class="nav-tab-btn active-tab" onclick="gantiTabPusat('attendance')">ATTENDANCE</button>
+                <button class="nav-tab-btn" onclick="gantiTabPusat('libur')">PENGAMBILAN LIBUR</button>
+            </div>
+
+            <!-- Panel Attendance -->
+            <div id="panelAttendance" class="card-box center-panel">
+                <h4>📋 Rekap Kehadiran</h4>
+                <p class="desc-text">Pilih role untuk melihat daftar pengguna:</p>
+                <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <button class="nav-tab-btn" style="background:#2563eb; color:white;" onclick="filterRoleAttendance('Karyawan')">Karyawan</button>
+                    <button class="nav-tab-btn" style="background:#2563eb; color:white;" onclick="filterRoleAttendance('Supervisor')">Supervisor</button>
+                    <button class="nav-tab-btn" style="background:#2563eb; color:white;" onclick="filterRoleAttendance('Manager')">Manager</button>
+                </div>
+                <!-- Daftar Nama / ID -->
+                <div id="listUserAttendance" class="history-box" style="margin-bottom:10px;">
+                    <span style="color:#64748b;">Silakan pilih role di atas...</span>
+                </div>
+                <!-- Detail Riwayat Per ID yang Diklik -->
+                <div id="detailUserAttendance" class="history-box" style="background:#f8fafc;">
+                    <strong>Detail Riwayat & Frekuensi:</strong>
+                    <p id="textDetailAbsen" style="font-size:12px; color:#64748b; margin-top:5px;">Klik salah satu ID di atas untuk melihat detail.</p>
+                </div>
+            </div>
+
+            <!-- Panel Pengambilan Libur -->
+            <div id="panelLibur" class="card-box center-panel hidden">
+                <h4>📅 Persetujuan Cuti / Libur</h4>
+                <div id="listPengajuanCuti" class="history-box">
+                    <p style="color:#64748b;">Belum ada pengajuan cuti masuk.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- HALAMAN DASHBOARD MANAGER -->
-    <div id="managerDashboard" class="hidden">
-        <div class="user-info">
-            <span id="mgrWelcome">Halo, Manager</span>
-            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
-        </div>
-
-        <div class="card-box">
-            <h3>Menu Absensi Mandiri (Manager)</h3>
-            <button id="btnMgrCheckIn" onclick="doCheckIn()" class="btn-action btn-unclicked">🔴 Check-In Masuk (GPS)</button>
-            <button id="btnMgrCheckOut" onclick="doCheckOut()" class="btn-action btn-unclicked">🔴 Check-Out Pulang</button>
-        </div>
-
-        <div class="card-box">
-            <h3>Monitoring Kinerja Tim</h3>
-            <div id="managerLogBox" class="log-container">
-                <em>Memuat data laporan...</em>
-            </div>
-        </div>
-    </div>
-
-    <!-- HALAMAN DASHBOARD PUSAT -->
-    <div id="centerDashboard" class="hidden">
-        <div class="user-info">
-            <span id="centerWelcome">Halo, Admin Pusat</span>
-            <button class="logout-btn" onclick="handleLogout()">Keluar</button>
-        </div>
-
-        <div class="center-nav-tabs">
-            <button onclick="switchCenterTab('absensi')" id="tabAbsensi" class="nav-tab-btn active-tab">📁 Absensi Karyawan</button>
-            <button onclick="switchCenterTab('jadwal')" id="tabJadwal" class="nav-tab-btn">📅 Jadwal Karyawan</button>
-            <button onclick="switchCenterTab('penilaian')" id="tabPenilaian" class="nav-tab-btn">⭐ Penilaian Harian</button>
-        </div>
-
-        <div id="centerSectionAbsensi" class="center-section-content">
-            <div class="card-box center-panel">
-                <h3 style="color: #b45309;">Rekap Absensi Global</h3>
-                <div id="centerLogBox" class="log-container"><em>Belum ada aktivitas.</em></div>
-            </div>
-        </div>
-
-        <div id="centerSectionJadwal" class="center-section-content hidden">
-            <div class="card-box center-panel">
-                <h3 style="color: #b45309;">Jadwal Shift & Kerja</h3>
-                <p class="desc-text">Shift Pagi: 07:00 - 17:10 (Senin - Jumat)</p>
-            </div>
-        </div>
-
-        <div id="centerSectionPenilaian" class="center-section-content hidden">
-            <div class="card-box center-panel">
-                <h3 style="color: #b45309;">Arsip Penilaian & KPI</h3>
-                <div id="centerRatingBox" class="log-container"><em>Belum ada penilaian.</em></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
-<!-- === DASHBOARD KARYAWAN (TAMBAHAN TRACKER ABSEN & CUTI) === -->
-<div id="karyawanDashboard" class="container hidden">
-    <div class="logo-area">
-        <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img">
-        <div class="logo-title">PT Nova Sejahtera</div>
-        <div class="logo-subtitle">Portal Karyawan</div>
-    </div>
-    
-    <div class="user-info">
-        <span id="welcomeUser">Halo, Karyawan</span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-
-    <!-- Tracker Target Absen (Min 25 Hari) -->
-    <div class="card-box">
-        <h4>📊 Target Kehadiran Bulan Ini</h4>
-        <p id="infoTargetAbsen" class="desc-text">Memuat data absensi...</p>
-        <button id="btnCheckIn" class="btn-action btn-unclicked" onclick="prosesCheckIn()">CHECK-IN</button>
-        <button id="btnCheckOut" class="btn-action btn-unclicked" onclick="prosesCheckOut()">CHECK-OUT</button>
-    </div>
-
-    <!-- Pengajuan Libur / Cuti -->
-    <div class="card-box">
-        <h4>📝 Pengajuan Cuti / Libur</h4>
-        <div class="form-group">
-            <input type="date" id="tanggalCuti">
-            <textarea id="alasanCuti" placeholder="Alasan cuti..." rows="2" style="margin-top:8px;"></textarea>
-            <button class="btn-action btn-primary" onclick="submitCuti()" style="margin-top:8px;">Kirim Pengajuan</button>
-        </div>
-        <p>Status Pengajuan Terakhir:</p>
-        <div id="statusCutiKaryawan" class="alert" style="background:#f1f5f9; color:#334155;">Belum ada pengajuan</div>
-    </div>
-</div>
-
-
-<!-- === DASHBOARD PUSAT (ATTENDANCE & PENGAMBILAN LIBUR) === -->
-<div id="centerDashboard" class="container hidden">
-    <div class="logo-area">
-        <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img">
-        <div class="logo-title">PT Nova Sejahtera</div>
-        <div class="logo-subtitle">Pusat Control Panel</div>
-    </div>
-
-    <div class="user-info">
-        <span>Pusat Administrator</span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-
-    <!-- Tab Navigasi Pusat -->
-    <div class="center-nav-tabs">
-        <button class="nav-tab-btn active-tab" onclick="gantiTabPusat('attendance')">ATTENDANCE</button>
-        <button class="nav-tab-btn" onclick="gantiTabPusat('libur')">PENGAMBILAN LIBUR</button>
-    </div>
-
-    <!-- Panel Attendance -->
-    <div id="panelAttendance" class="card-box center-panel">
-        <h4>📋 Rekap Kehadiran Karyawan</h4>
-        <p class="desc-text">Pilih kategori role untuk melihat detail:</p>
-        <div style="display:flex; gap:5px; margin-bottom:10px;">
-            <button class="nav-tab-btn" onclick="filterRoleAttendance('Karyawan')">Karyawan</button>
-            <button class="nav-tab-btn" onclick="filterRoleAttendance('Supervisor')">Supervisor</button>
-            <button class="nav-tab-btn" onclick="filterRoleAttendance('Manager')">Manager</button>
-        </div>
-        <!-- Daftar Nama / ID -->
-        <div id="listUserAttendance" class="history-box" style="margin-bottom:10px;">
-            <span style="color:#64748b;">Silakan pilih role di atas...</span>
-        </div>
-        <!-- Detail Riwayat Per ID yang Diklik -->
-        <div id="detailUserAttendance" class="history-box" style="background:#f8fafc;">
-            <strong>Detail Riwayat & Frekuensi:</strong>
-            <p id="textDetailAbsen" style="font-size:12px; color:#64748b; margin-top:5px;">Klik salah satu ID di atas untuk melihat detail.</p>
-        </div>
-    </div>
-
-    <!-- Panel Pengambilan Libur -->
-    <div id="panelLibur" class="card-box center-panel hidden">
-        <h4>📅 Persetujuan Cuti / Libur</h4>
-        <div id="listPengajuanCuti" class="history-box">
-            <p style="color:#64748b;">Belum ada pengajuan cuti masuk.</p>
-        </div>
-    </div>
-</div>
-
