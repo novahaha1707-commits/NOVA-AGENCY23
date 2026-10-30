@@ -186,3 +186,86 @@
 <script src="script.js"></script>
 </body>
 </html>
+<!-- === DASHBOARD KARYAWAN (TAMBAHAN TRACKER ABSEN & CUTI) === -->
+<div id="karyawanDashboard" class="container hidden">
+    <div class="logo-area">
+        <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img">
+        <div class="logo-title">PT Nova Sejahtera</div>
+        <div class="logo-subtitle">Portal Karyawan</div>
+    </div>
+    
+    <div class="user-info">
+        <span id="welcomeUser">Halo, Karyawan</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Tracker Target Absen (Min 25 Hari) -->
+    <div class="card-box">
+        <h4>📊 Target Kehadiran Bulan Ini</h4>
+        <p id="infoTargetAbsen" class="desc-text">Memuat data absensi...</p>
+        <button id="btnCheckIn" class="btn-action btn-unclicked" onclick="prosesCheckIn()">CHECK-IN</button>
+        <button id="btnCheckOut" class="btn-action btn-unclicked" onclick="prosesCheckOut()">CHECK-OUT</button>
+    </div>
+
+    <!-- Pengajuan Libur / Cuti -->
+    <div class="card-box">
+        <h4>📝 Pengajuan Cuti / Libur</h4>
+        <div class="form-group">
+            <input type="date" id="tanggalCuti">
+            <textarea id="alasanCuti" placeholder="Alasan cuti..." rows="2" style="margin-top:8px;"></textarea>
+            <button class="btn-action btn-primary" onclick="submitCuti()" style="margin-top:8px;">Kirim Pengajuan</button>
+        </div>
+        <p>Status Pengajuan Terakhir:</p>
+        <div id="statusCutiKaryawan" class="alert" style="background:#f1f5f9; color:#334155;">Belum ada pengajuan</div>
+    </div>
+</div>
+
+
+<!-- === DASHBOARD PUSAT (ATTENDANCE & PENGAMBILAN LIBUR) === -->
+<div id="centerDashboard" class="container hidden">
+    <div class="logo-area">
+        <img src="logo.png" alt="Logo PT Nova Sejahtera" class="company-logo-img">
+        <div class="logo-title">PT Nova Sejahtera</div>
+        <div class="logo-subtitle">Pusat Control Panel</div>
+    </div>
+
+    <div class="user-info">
+        <span>Pusat Administrator</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Tab Navigasi Pusat -->
+    <div class="center-nav-tabs">
+        <button class="nav-tab-btn active-tab" onclick="gantiTabPusat('attendance')">ATTENDANCE</button>
+        <button class="nav-tab-btn" onclick="gantiTabPusat('libur')">PENGAMBILAN LIBUR</button>
+    </div>
+
+    <!-- Panel Attendance -->
+    <div id="panelAttendance" class="card-box center-panel">
+        <h4>📋 Rekap Kehadiran Karyawan</h4>
+        <p class="desc-text">Pilih kategori role untuk melihat detail:</p>
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <button class="nav-tab-btn" onclick="filterRoleAttendance('Karyawan')">Karyawan</button>
+            <button class="nav-tab-btn" onclick="filterRoleAttendance('Supervisor')">Supervisor</button>
+            <button class="nav-tab-btn" onclick="filterRoleAttendance('Manager')">Manager</button>
+        </div>
+        <!-- Daftar Nama / ID -->
+        <div id="listUserAttendance" class="history-box" style="margin-bottom:10px;">
+            <span style="color:#64748b;">Silakan pilih role di atas...</span>
+        </div>
+        <!-- Detail Riwayat Per ID yang Diklik -->
+        <div id="detailUserAttendance" class="history-box" style="background:#f8fafc;">
+            <strong>Detail Riwayat & Frekuensi:</strong>
+            <p id="textDetailAbsen" style="font-size:12px; color:#64748b; margin-top:5px;">Klik salah satu ID di atas untuk melihat detail.</p>
+        </div>
+    </div>
+
+    <!-- Panel Pengambilan Libur -->
+    <div id="panelLibur" class="card-box center-panel hidden">
+        <h4>📅 Persetujuan Cuti / Libur</h4>
+        <div id="listPengajuanCuti" class="history-box">
+            <p style="color:#64748b;">Belum ada pengajuan cuti masuk.</p>
+        </div>
+    </div>
+</div>
+
