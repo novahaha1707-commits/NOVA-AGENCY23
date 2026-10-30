@@ -284,3 +284,184 @@ window.addEventListener('DOMContentLoaded', () => {
     // Cek ulang setiap 1 menit otomatis
     setInterval(aturWaktuAbsen, 60000);
 });
+// --- SIMULASI & PENYIMPANAN DATA LOCALSTORAGE ---
+function getDatabase() {
+    return {
+        absen: JSON.parse(localStorage.getItem('db_absen')) || [],
+        cuti: JSON.parse(localStorage.getItem('db_cuti')) || []
+    };
+}
+
+// 1. Fitur Check-In & Hitung Target 25 Hari
+function prosesCheckIn() {
+    const userAktif = localStorage.getItem('currentUser') || 'fendi005';
+    const db = getDatabase();
+    const hariIni = new Date().toISOString().split('T')[0];
+    const jamIni = new Date().toLocaleTimeString();
+
+    // Cek apakah sudah absen hari ini
+    const sudahAbsen = db.absen.find(item => item.id === userAktif && item.tanggal === hariIni);
+    if (sudahAbsen) {
+        alert("Anda sudah melakukan Check-In hari ini!");
+        return;
+    }
+
+    // Masukkan data absen baru
+    db.absen.push({ id: userAktif, role: 'Karyawan', tanggal: hariIni, jamCheckIn: jamIni, jamCheckOut: '-' });
+    localStorage.setItem('db_absen', JSON.stringify(db));
+
+    alert("Check-In Berhasil!");
+    muatDashboardKaryawan();
+}
+
+function prosesCheckOut() {
+    const userAktif = localStorage.getItem('currentUser') || 'fendi005';
+    const db = getDatabase();
+    const hariIni = new Date().toISOString().split('T')[0];
+    const jamIni = new Date().toLocaleTimeString();
+
+    const dataAbsenHariIni = db.absen.find(item => item.id === userAktif && item.tanggal === hariIni);
+    if (!dataAbsenHariIni) {
+        alert("Anda belum melakukan Check-In hari ini!");
+        return;
+    }
+
+    dataAbsenHariIni.jamCheckOut = jamIni;
+    localStorage.setItem('db_absen', JSON.stringify(db));
+
+    alert("Check-Out Berhasil dicatat (Masa aktif 24 jam dimulai)!");
+    muatDashboardKaryawan();
+}
+
+function muatDashboardKaryawan() {
+    const userAktif = localStorage.getItem('currentUser') || 'fendi005';
+    const db = getDatabase();
+    
+    // Hitung total hari masuk (target minimal 25 hari)
+    const absenUser = db.absen.filter(item => item.id === userAktif);
+    const totalHari = absenUser.length;
+    const target = 25;
+
+    const infoTarget = document.getElementById('infoTargetAbsen');
+    if (infoTarget) {
+        if (totalHari >= target) {
+            infoTarget.innerHTML = `✅ Total Masuk: <b>${totalHari} hari</b>. <span style="color:green;">Target 25 hari tercapai!</span>`;
+        } else {
+            infoTarget.innerHTML = `⚠️ Total Masuk: <b>${totalHari} / ${target} hari</b>. Kurang ${target - totalHari} hari lagi untuk capai target bulanan.`;
+        }
+    }
+
+    // Tampilkan Status Cuti Terakhir
+    const cutiUser = db.cuti.filter(item => item.id === userAktif);
+    const statusCutiEl = document.getElementById('statusCutiKaryawan');
+    if (cutiUser.length > 0 && statusCutiEl) {
+        const terakhir = cutiUser[cutiUser.length - 1];
+        statusCutiEl.innerText = `Tanggal: ${terakhir.tanggal} | Status: ${terakhir.status.toUpperCase()}`;
+        if (terakhir.status === 'Disetujui') statusCutiEl.style.background = '#dcfce7';
+        else if (terakhir.status === 'Tidak Disetujui') statusCutiEl.style.background = '#fee2e2';
+    }
+}
+
+
+// 2. Fitur Pengajuan Cuti oleh Karyawan
+function submitCuti() {
+    const userAktif = localStorage.getItem('currentUser') || 'fendi005';
+    const tanggal = document.getElementById('tanggalCuti').value;
+    const alasan = document.getElementById('alasanCuti').value;
+
+    if (!tanggal || !alasan) {
+        alert("Harap isi tanggal dan alasan cuti!");
+        return;
+    }
+
+    const db = getDatabase();
+    db.cuti.push({ id: userAktif, tanggal, alasan, status: 'Sedang ditinjau Pusat' });
+    localStorage.setItem('db_cuti', JSON.stringify(db));
+
+    alert("Pengajuan cuti berhasil dikirim dan sedang ditinjau Pusat.");
+    muatDashboardKaryawan();
+}
+
+
+// 3. Logika Tab & Interaksi Panel Pusat
+function gantiTabPusat(tab) {
+    const panelAtt = document.getElementById('panelAttendance');
+    const panelLibur = document.getElementById('panelLibur');
+    const tabs = document.querySelectorAll('.center-nav-tabs .nav-tab-btn');
+
+    tabs.forEach(t => t.classList.remove('active-tab'));
+
+    if (tab === 'attendance') {
+        panelAtt.classList.remove('hidden');
+        panelLibur.classList.add('hidden');
+        tabs[0].classList.add('active-tab');
+    } else {
+        panelAtt.classList.add('hidden');
+        panelLibur.classList.remove('hidden');
+        tabs[1].classList.add('active-tab');
+        muatDataCutiPusat();
+    }
+}
+
+function filterRoleAttendance(role) {
+    const container = document.getElementById('listUserAttendance');
+    // Contoh daftar ID berdasarkan role
+    let daftarID = [];
+    if (role === 'Karyawan') daftarID = ['fendi005', 'bagusadi456'];
+    else if (role === 'Supervisor') daftarID = ['nandaspv45'];
+    else if (role === 'Manager') daftarID = ['irfan357'];
+
+    container.innerHTML = `<strong>Pilih ID (${role}):</strong><br>`;
+    daftarID.forEach(id => {
+        container.innerHTML += `<button class="nav-tab-btn" style="background:#2563eb; color:white; margin:4px 0;" onclick="lihatDetailAbsenID('${id}')">${id}</button>`;
+    });
+}
+
+function lihatDetailAbsenID(idTarget) {
+    const db = getDatabase();
+    const data = db.absen.filter(item => item.id === idTarget);
+    const detailEl = document.getElementById('textDetailAbsen');
+
+    if (data.length === 0) {
+        detailEl.innerHTML = `ID <b>${idTarget}</b> belum memiliki catatan riwayat absensi.`;
+        return;
+    }
+
+    let html = `<b>ID: ${idTarget}</b> | Total Absen: <b>${data.length} kali</b><br><ul>`;
+    data.forEach(d => {
+        html += `<li>Tgl: ${d.tanggal} | In: ${d.jamCheckIn} | Out: ${d.jamCheckOut}</li>`;
+    });
+    html += `</ul>`;
+    detailEl.innerHTML = html;
+}
+
+function muatDataCutiPusat() {
+    const db = getDatabase();
+    const container = document.getElementById('listPengajuanCuti');
+
+    if (db.cuti.length === 0) {
+        container.innerHTML = `<p style="color:#64748b;">Belum ada pengajuan cuti masuk.</p>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    db.cuti.forEach((c, index) => {
+        container.innerHTML += `
+            <div style="border-bottom:1px solid #cbd5e1; padding-bottom:8px; margin-bottom:8px;">
+                <b>ID: ${c.id}</b> | Tgl: ${c.tanggal}<br>
+                Alasan: ${c.alasan}<br>
+                Status: <b>${c.status}</b><br>
+                <button class="nav-tab-btn" style="background:green; color:white; width:48%; display:inline-block;" onclick="ubahStatusCuti(${index}, 'Disetujui')">Setuju</button>
+                <button class="nav-tab-btn" style="background:red; color:white; width:48%; display:inline-block; margin-left:4%;" onclick="ubahStatusCuti(${index}, 'Tidak Disetujui')">Tidak</button>
+            </div>
+        `;
+    });
+}
+
+function ubahStatusCuti(index, statusBaru) {
+    const db = getDatabase();
+    db.cuti[index].status = statusBaru;
+    localStorage.setItem('db_cuti', JSON.stringify(db));
+    alert(`Pengajuan berhasil diubah menjadi: ${statusBaru}`);
+    muatDataCutiPusat();
+}
