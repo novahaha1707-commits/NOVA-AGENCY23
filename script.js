@@ -1,6 +1,6 @@
 const users = {
-    "fendi005": { name: "fendi005", role: "karyawan", pass: "fendi567" },
-    "bagusadi456": { name: "bagusadi456", role: "karyawan", pass: "bagusbagus23" },
+    "fendi005": { name: "Fendi", role: "karyawan", pass: "fendi567" },
+    "bagusadi456": { name: "Bagus Adi", role: "karyawan", pass: "bagusbagus23" },
     "nandaspv45": { name: "Nanda (Supervisor)", role: "supervisor", pass: "nanda@23" },
     "irfan357": { name: "Irfan (Manager)", role: "manager", pass: "irfan_4" },
     "center1": { name: "Admin Pusat", role: "center", pass: "@@234pusat" }
@@ -10,7 +10,7 @@ let currentUser = null;
 let globalLogs = JSON.parse(localStorage.getItem('globalLogs')) || [];
 let globalRatings = JSON.parse(localStorage.getItem('globalRatings')) || [];
 let empHistories = JSON.parse(localStorage.getItem('empHistories')) || {};
-let attendanceStatus = JSON.parse(localStorage.getItem('attendanceStatus')) || {}; // Menyimpan status 1x klik per user per hari
+let attendanceStatus = JSON.parse(localStorage.getItem('attendanceStatus')) || {};
 
 function handleLogin() {
     const id = document.getElementById("loginId").value.trim();
@@ -26,14 +26,12 @@ function handleLogin() {
     alertBox.classList.add("hidden");
     currentUser = { id, ...users[id] };
     
-    // Sembunyikan semua halaman
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("employeeDashboard").classList.add("hidden");
     document.getElementById("spvDashboard").classList.add("hidden");
     document.getElementById("managerDashboard").classList.add("hidden");
     document.getElementById("centerDashboard").classList.add("hidden");
 
-    // Tampilkan sesuai role
     if (currentUser.role === "karyawan") {
         document.getElementById("empWelcome").innerText = `Halo, ${currentUser.name}`;
         document.getElementById("employeeDashboard").classList.remove("hidden");
@@ -75,7 +73,6 @@ function showEmpAlert(msg, type = "success") {
     setTimeout(() => { el.innerText = ""; el.className = ""; }, 4000);
 }
 
-// Cek status tombol agar terkunci hijau jika sudah absen hari ini
 function checkButtonStates() {
     if (!currentUser) return;
     const todayKey = new Date().toDateString();
@@ -108,32 +105,10 @@ function checkButtonStates() {
 }
 
 function doCheckIn() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            () => processCheckInLogic(true),
-            () => {
-                alert("Mohon aktifkan GPS/Lokasi di perangkat Anda.");
-                processCheckInLogic(true); // Tetap diproses untuk simulasi fleksibel
-            },
-            { timeout: 10000 }
-        );
-    } else {
-        processCheckInLogic(true);
-    }
-}
-
-function processCheckInLogic(isGpsValid) {
-    if (!isGpsValid) return;
-
     const todayKey = new Date().toDateString();
     if (!attendanceStatus[currentUser.id]) {
         attendanceStatus[currentUser.id] = { date: todayKey, checkedIn: false, checkedOut: false };
     }
-
-    if (attendanceStatus[currentUser.id].date !== todayKey) {
-        attendanceStatus[currentUser.id] = { date: todayKey, checkedIn: false, checkedOut: false };
-    }
-
     if (attendanceStatus[currentUser.id].checkedIn) {
         alert("Anda sudah melakukan Check-In hari ini!");
         return;
@@ -142,30 +117,12 @@ function processCheckInLogic(isGpsValid) {
     const now = new Date();
     const hours = now.getHours();
     const minutes = now.getMinutes();
-    const totalMinutes = hours * 60 + minutes;
-
-    const minTime = 7 * 60; 
-    const maxTime = 7 * 60 + 20;
-
     let roleBadge = `[${currentUser.role.toUpperCase()}]`;
 
-    if (totalMinutes < minTime) {
-        showEmpAlert("Belum waktunya check-in! Mulai pukul 07:00.", "alert");
-    } else if (totalMinutes > maxTime) {
-        showEmpAlert("Anda TERLAMBAT (> 07:20)! Tercatat di pusat.", "alert");
-        addLog(`⚠️ ${roleBadge} ${currentUser.name} Check-In TERLAMBAT pukul ${formatTime(hours, minutes)}`);
-        addEmpHistory(`⚠️ Check-In Terlambat pukul ${formatTime(hours, minutes)}`);
-        markCheckedInSuccess();
-    } else {
-        showEmpAlert(`Berhasil Check-In Tepat Waktu pukul ${formatTime(hours, minutes)}.`);
-        addLog(`✅ ${roleBadge} ${currentUser.name} berhasil Check-In Tepat Waktu.`);
-        addEmpHistory(`✅ Check-In Tepat Waktu pukul ${formatTime(hours, minutes)}`);
-        markCheckedInSuccess();
-    }
-}
-
-function markCheckedInSuccess() {
-    const todayKey = new Date().toDateString();
+    showEmpAlert(`Berhasil Check-In pada pukul ${formatTime(hours, minutes)}.`);
+    addLog(`✅ ${roleBadge} ${currentUser.name} berhasil Check-In.`);
+    addEmpHistory(`✅ Check-In pukul ${formatTime(hours, minutes)}`);
+    
     attendanceStatus[currentUser.id].checkedIn = true;
     attendanceStatus[currentUser.id].date = todayKey;
     localStorage.setItem('attendanceStatus', JSON.stringify(attendanceStatus));
@@ -177,33 +134,24 @@ function doCheckOut() {
     const userState = attendanceStatus[currentUser.id] || {};
 
     if (!userState.checkedIn) {
-        alert("Anda harus melakukan Check-In terlebih dahulu sebelum Check-Out!");
+        alert("Anda harus melakukan Check-In terlebih dahulu!");
         return;
     }
-
     if (userState.checkedOut) {
         alert("Anda sudah melakukan Check-Out hari ini!");
         return;
     }
 
     const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const totalMinutes = hours * 60 + minutes;
-    const minCheckout = 17 * 60 + 10;
     let roleBadge = `[${currentUser.role.toUpperCase()}]`;
 
-    if (totalMinutes < minCheckout) {
-        showEmpAlert("Belum waktunya check-out! Minimal pukul 17:10.", "alert");
-    } else {
-        showEmpAlert(`Berhasil Check-Out pada pukul ${formatTime(hours, minutes)}. Hati-hati di jalan!`);
-        addLog(`✅ ${roleBadge} ${currentUser.name} melakukan Check-Out Pulang.`);
-        addEmpHistory(`✅ Check-Out Pulang pukul ${formatTime(hours, minutes)}`);
-        
-        attendanceStatus[currentUser.id].checkedOut = true;
-        localStorage.setItem('attendanceStatus', JSON.stringify(attendanceStatus));
-        checkButtonStates();
-    }
+    showEmpAlert(`Berhasil Check-Out pada pukul ${formatTime(now.getHours(), now.getMinutes())}.`);
+    addLog(`✅ ${roleBadge} ${currentUser.name} melakukan Check-Out.`);
+    addEmpHistory(`✅ Check-Out pukul ${formatTime(now.getHours(), now.getMinutes())}`);
+    
+    attendanceStatus[currentUser.id].checkedOut = true;
+    localStorage.setItem('attendanceStatus', JSON.stringify(attendanceStatus));
+    checkButtonStates();
 }
 
 function submitCuti() {
@@ -213,34 +161,30 @@ function submitCuti() {
         alert("Harap isi tanggal dan alasan cuti!");
         return;
     }
-    showEmpAlert("Pengajuan cuti berhasil dikirim ke Supervisor & Pusat.");
-    addLog(`📅 [CUTI] ${currentUser.name} mengajukan cuti pada tanggal ${date}. Alasan: "${reason}"`);
-    addEmpHistory(`📅 Pengajuan Cuti (${date}): "${reason}"`);
+    showEmpAlert("Pengajuan cuti berhasil dikirim.");
+    addLog(`📅 [CUTI] ${currentUser.name} mengajukan cuti tanggal ${date}. Alasan: "${reason}"`);
+    addEmpHistory(`📅 Pengajuan Cuti (${date})`);
     document.getElementById("cutiReason").value = "";
     document.getElementById("cutiDate").value = "";
 }
 
 function bukaAbsenTelat() {
     const targetId = document.getElementById("targetKaryawanTelat").value;
-    alert(`Akses absen untuk ID (${targetId}) telah dibuka oleh Supervisor.`);
-    addLog(`🔓 [OVERRIDE SPV] Supervisor ${currentUser.name} membukakan absen telat untuk Karyawan ID: ${targetId}`);
+    alert(`Akses absen untuk ID (${targetId}) telah dibuka.`);
+    addLog(`🔓 [OVERRIDE SPV] Supervisor ${currentUser.name} membukakan absen untuk ${targetId}`);
 }
 
 function submitRating() {
     const targetId = document.getElementById("rateKaryawan").value;
     const bintang = document.getElementById("rateBintang").value;
     const alasan = document.getElementById("rateAlasan").value;
-
     if (!alasan) {
-        alert("Harap isi alasan/kritik penilaian!");
+        alert("Harap isi alasan penilaian!");
         return;
     }
-
-    alert("Penilaian berhasil dikirim ke Pusat!");
-    const logText = `⭐ [KPI RATING] Spv ${currentUser.name} menilai ${targetId} dengan rating ${bintang}. Catatan: "${alasan}"`;
-    addLog(logText);
-    
-    globalRatings.unshift(`[${new Date().toLocaleTimeString()}] Penilaian untuk ${targetId} oleh ${currentUser.name}: ${bintang} - "${alasan}"`);
+    alert("Penilaian berhasil dikirim!");
+    addLog(`⭐ [KPI] Spv ${currentUser.name} menilai ${targetId} (${bintang}): "${alasan}"`);
+    globalRatings.unshift(`[${new Date().toLocaleTimeString()}] Penilaian untuk ${targetId}: ${bintang} - "${alasan}"`);
     localStorage.setItem('globalRatings', JSON.stringify(globalRatings));
     document.getElementById("rateAlasan").value = "";
     updateRatingsView();
@@ -251,18 +195,14 @@ function formatTime(h, m) {
 }
 
 function addLog(text) {
-    const timestamp = new Date().toLocaleTimeString();
-    globalLogs.unshift(`[${timestamp}] ${text}`);
+    globalLogs.unshift(`[${new Date().toLocaleTimeString()}] ${text}`);
     localStorage.setItem('globalLogs', JSON.stringify(globalLogs));
     updateLogsView();
 }
 
 function addEmpHistory(text) {
-    if (!empHistories[currentUser.id]) {
-        empHistories[currentUser.id] = [];
-    }
-    const timestamp = new Date().toLocaleTimeString();
-    empHistories[currentUser.id].unshift(`[${timestamp}] ${text}`);
+    if (!empHistories[currentUser.id]) empHistories[currentUser.id] = [];
+    empHistories[currentUser.id].unshift(`[${new Date().toLocaleTimeString()}] ${text}`);
     localStorage.setItem('empHistories', JSON.stringify(empHistories));
     updateEmpHistoryView();
 }
@@ -271,25 +211,20 @@ function updateEmpHistoryView() {
     const box = document.getElementById("empHistoryBox");
     if (!box || !currentUser) return;
     const history = empHistories[currentUser.id];
-    if (!history || history.length === 0) {
-        box.innerHTML = "<em>Belum ada catatan aktivitas hari ini.</em>";
-    } else {
-        box.innerHTML = history.join("<br>");
-    }
+    box.innerHTML = (!history || history.length === 0) ? "<em>Belum ada catatan aktivitas.</em>" : history.join("<br>");
 }
 
 function updateLogsView() {
-    const logHtml = globalLogs.length === 0 ? "<em>Belum ada aktivitas tercatat.</em>" : globalLogs.join("<br><br>");
+    const logHtml = globalLogs.length === 0 ? "<em>Belum ada aktivitas.</em>" : globalLogs.join("<br><br>");
     if(document.getElementById("centerLogBox")) document.getElementById("centerLogBox").innerHTML = logHtml;
     if(document.getElementById("managerLogBox")) document.getElementById("managerLogBox").innerHTML = logHtml;
 }
 
 function updateRatingsView() {
-    const rateHtml = globalRatings.length === 0 ? "<em>Belum ada penilaian kinerja yang masuk.</em>" : globalRatings.join("<br><br>");
+    const rateHtml = globalRatings.length === 0 ? "<em>Belum ada penilaian.</em>" : globalRatings.join("<br><br>");
     if(document.getElementById("centerRatingBox")) document.getElementById("centerRatingBox").innerHTML = rateHtml;
 }
 
-// Navigasi Tab Menu Beranda di Dashboard Pusat
 function switchCenterTab(tabName) {
     document.getElementById("centerSectionAbsensi").classList.add("hidden");
     document.getElementById("centerSectionJadwal").classList.add("hidden");
@@ -311,8 +246,3 @@ function switchCenterTab(tabName) {
         updateRatingsView();
     }
 }
-
-window.onload = function() {
-    updateLogsView();
-    updateRatingsView();
-};
