@@ -55,8 +55,8 @@
             <div class="card-box">
                 <h4>📊 Target Kehadiran Bulan Ini</h4>
                 <p id="infoTargetAbsen" class="desc-text">Memuat data absensi...</p>
-                <button type="button" id="btnCheckIn" class="btn-action btn-unclicked" onclick="prosesCheckIn()">CHECK-IN</button>
-                <button type="button" id="btnCheckOut" class="btn-action btn-unclicked" onclick="prosesCheckOut()">CHECK-OUT</button>
+                <button type="button" id="btnCheckIn" class="btn-action" onclick="prosesCheckIn()">CHECK-IN</button>
+                <button type="button" id="btnCheckOut" class="btn-action" onclick="prosesCheckOut()">CHECK-OUT</button>
             </div>
 
             <!-- Pengajuan Libur / Cuti -->
@@ -96,16 +96,16 @@
                 <h4>📋 Rekap Kehadiran</h4>
                 <p class="desc-text">Pilih role untuk melihat daftar pengguna:</p>
                 <div style="display:flex; gap:5px; margin-bottom:10px;">
-                    <button type="button" class="nav-tab-btn" style="background:#2563eb; color:white;" onclick="filterRoleAttendance('Karyawan')">Karyawan</button>
-                    <button type="button" class="nav-tab-btn" style="background:#2563eb; color:white;" onclick="filterRoleAttendance('Supervisor')">Supervisor</button>
-                    <button type="button" class="nav-tab-btn" style="background:#2563eb; color:white;" onclick="filterRoleAttendance('Manager')">Manager</button>
+                    <button type="button" class="nav-tab-btn" style="background:#2563eb; color:white; padding: 6px 12px; border:none; border-radius:4px;" onclick="filterRoleAttendance('Karyawan')">Karyawan</button>
+                    <button type="button" class="nav-tab-btn" style="background:#2563eb; color:white; padding: 6px 12px; border:none; border-radius:4px;" onclick="filterRoleAttendance('Supervisor')">Supervisor</button>
+                    <button type="button" class="nav-tab-btn" style="background:#2563eb; color:white; padding: 6px 12px; border:none; border-radius:4px;" onclick="filterRoleAttendance('Manager')">Manager</button>
                 </div>
                 <!-- Daftar Nama / ID -->
                 <div id="listUserAttendance" class="history-box" style="margin-bottom:10px;">
                     <span style="color:#64748b;">Silakan pilih role di atas...</span>
                 </div>
                 <!-- Detail Riwayat Per ID yang Diklik -->
-                <div id="detailUserAttendance" class="history-box" style="background:#f8fafc;">
+                <div id="detailUserAttendance" class="history-box" style="background:#f8fafc; padding:10px; border-radius:6px;">
                     <strong>Detail Riwayat & Frekuensi:</strong>
                     <p id="textDetailAbsen" style="font-size:12px; color:#64748b; margin-top:5px;">Klik salah satu ID di atas untuk melihat detail.</p>
                 </div>
