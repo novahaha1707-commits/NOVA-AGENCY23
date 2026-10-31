@@ -3,7 +3,7 @@ const akunDatabase = {
     'bagusadi456': { pass: 'bagusbagus23', role: 'Karyawan', nama: 'Bagus Adi' },
     'nandaspv45': { pass: 'nanda@23', role: 'Supervisor', nama: 'Nanda (SPV)' },
     'irfan357': { pass: 'irfan_4', role: 'Manager', nama: 'Irfan (Manager)' },
-    'center1': { pass: '@@234pusat', role: 'Pusat', nama: 'Pusat Administrator' }
+    'center1': { pass: '234pusat', role: 'Pusat', nama: 'Pusat Administrator' }
 };
 
 window.onload = function() {
