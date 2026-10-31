@@ -3,7 +3,7 @@ const akunDatabase = {
     'bagusadi456': { pass: 'bagusbagus23', role: 'Karyawan', nama: 'Bagus Adi' },
     'nandaspv45': { pass: 'nanda@23', role: 'Supervisor', nama: 'Nanda (SPV)' },
     'irfan357': { pass: 'irfan_4', role: 'Manager', nama: 'Irfan (Manager)' },
-    'center1': { pass: '234pusat', role: 'Pusat', nama: 'Pusat Administrator' }
+    'center1': { pass: '@@234pusat', role: 'Pusat', nama: 'Pusat Administrator' }
 };
 
 window.onload = function() {
@@ -144,6 +144,7 @@ function submitCuti() {
 
     const db = getDatabase();
     db.cuti.push({ id: userAktif, tanggal, alasan, status: 'Sedang ditinjau Pusat' });
+    localStorage.setItem('db_absen', JSON.stringify(db)); // Perbaikan sinkronisasi database
     localStorage.setItem('db_cuti', JSON.stringify(db));
 
     alert("Pengajuan cuti berhasil dikirim!");
@@ -180,7 +181,7 @@ function filterRoleAttendance(role) {
 
     container.innerHTML = `<strong>Pilih ID (${role}):</strong><br>`;
     daftarID.forEach(id => {
-        container.innerHTML += `<button type="button" class="nav-tab-btn" style="background:#2563eb; color:white; margin:4px 0;" onclick="lihatDetailAbsenID('${id}')">${id}</button>`;
+        container.innerHTML += `<button type="button" class="nav-tab-btn" style="background:#2563eb; color:white; margin:4px 0; padding:4px 8px; border:none; border-radius:4px;" onclick="lihatDetailAbsenID('${id}')">${id}</button> `;
     });
 }
 
@@ -219,8 +220,8 @@ function muatDataCutiPusat() {
                 <b>ID: ${c.id}</b> | Tgl: ${c.tanggal}<br>
                 Alasan: ${c.alasan}<br>
                 Status: <b>${c.status}</b><br><br>
-                <button type="button" class="nav-tab-btn" style="background:green; color:white; width:48%; display:inline-block;" onclick="ubahStatusCuti(${index}, 'Disetujui')">Setuju</button>
-                <button type="button" class="nav-tab-btn" style="background:red; color:white; width:48%; display:inline-block; margin-left:4%;" onclick="ubahStatusCuti(${index}, 'Tidak Disetujui')">Tidak</button>
+                <button type="button" class="nav-tab-btn" style="background:green; color:white; width:48%; display:inline-block; padding:6px; border:none; border-radius:4px;" onclick="ubahStatusCuti(${index}, 'Disetujui')">Setuju</button>
+                <button type="button" class="nav-tab-btn" style="background:red; color:white; width:48%; display:inline-block; margin-left:4%; padding:6px; border:none; border-radius:4px;" onclick="ubahStatusCuti(${index}, 'Tidak Disetujui')">Tidak</button>
             </div>
         `;
     });
